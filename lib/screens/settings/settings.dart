@@ -6,7 +6,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 import 'package:musicplayer_firstproject/controller/notifications.dart';
-import 'package:musicplayer_firstproject/themchanger.dart';
+import 'package:musicplayer_firstproject/Theme/themchanger.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ScreenSettings extends StatelessWidget {

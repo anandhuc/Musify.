@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:musicplayer_firstproject/drawer.dart';
+import 'package:musicplayer_firstproject/widgets/drawer.dart';
 import 'package:musicplayer_firstproject/screens/bottom%20play/bottomplay.dart';
 import 'package:musicplayer_firstproject/screens/search/screen_search.dart';
 import 'package:musicplayer_firstproject/screens/settings/settings.dart';
 import 'package:musicplayer_firstproject/screens/songs/screen_library.dart';
-import 'package:musicplayer_firstproject/themeProvier.dart';
 
-import '../bottomNav.dart';
+
+import '../widgets/bottomNav.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);

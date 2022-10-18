@@ -9,7 +9,7 @@ import 'package:musicplayer_firstproject/controller/notifications.dart';
 import 'package:musicplayer_firstproject/database/box_instance.dart';
 import 'package:musicplayer_firstproject/database/songs_adapter.dart';
 import 'package:musicplayer_firstproject/screens/splashSreen.dart';
-import 'package:musicplayer_firstproject/themeProvier.dart';
+import 'package:musicplayer_firstproject/Theme/themeProvier.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 

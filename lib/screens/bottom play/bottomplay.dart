@@ -18,7 +18,7 @@ class BottomPlay extends StatelessWidget {
 //       var physicalScreenSize = window.physicalSize;
 // var physicalWidth = physicalScreenSize.width;
 // var physicalHeight = physicalScreenSize.height;
-      return Container(   
+      return Container(  
         width: MediaQuery.of(context).size.width * 0.9 ,
         decoration: BoxDecoration(
             color:  Theme.of(context).brightness == Brightness.light? 
