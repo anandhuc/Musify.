@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:musicplayer_firstproject/controller/all%20songs/list_all_songs.dart';
-import 'package:musicplayer_firstproject/home/homescreen.dart';
+import 'package:musicplayer_firstproject/screens/home/homescreen.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({Key? key}) : super(key: key);
