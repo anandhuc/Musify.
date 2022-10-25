@@ -87,7 +87,7 @@ List<Audio> songList =[];
     return ListTile(
       onTap: () async{
         songList = _audioController.converterToAudio(newrecent);
-        await _audioController.openToPlayingScreen(songList, index);
+        await _audioController.openToPlayingScreen(songList,newrecent.length- index-1);
         Navigator.of(context).push(
           MaterialPageRoute(builder: 
           (context) => ScreenNowPlaying(),)
@@ -103,7 +103,7 @@ List<Audio> songList =[];
                     ClipRRect(
                       borderRadius:BorderRadius.circular(15),
                       child: QueryArtworkWidget(
-                        id: recent.value[index].id,
+                        id: recent.value[newrecent.length- index-1].id,
                          type: ArtworkType.AUDIO,
                          nullArtworkWidget: ClipRRect(
                           child: Image(image: AssetImage("assets/music.png")),
@@ -111,11 +111,11 @@ List<Audio> songList =[];
 
                   ),),
                   title: Text(
-                    newrecent[index].title,
+                    newrecent[newrecent.length- index-1].title,
                     style: TextStyle(fontSize: 20),
                     maxLines: 1,
                   ),
-                  subtitle: Text(newrecent[index].artist, style: TextStyle(fontSize: 15),maxLines: 1,) ,
+                  subtitle: Text(newrecent[newrecent.length- index-1].artist, style: TextStyle(fontSize: 15),maxLines: 1,) ,
                   
                 );
               }

@@ -30,9 +30,11 @@ class _ScreenSongsState extends State<ScreenSongs> {
   final favorites = ValueNotifier([]);
   var isLoading = ValueNotifier(true);
   final _allSongsController = Get.put(AllSongsController());
-  final recent = ValueNotifier([]); 
+  final recent = ValueNotifier([]);  List<AllSongsModel> allSongslist = [];
   @override
   Widget build(BuildContext context) {
+    List allList = box.get("allSongs");
+    allSongslist = allList.cast<AllSongsModel>();
     isLoading.value = false;
     List _keys = box.keys.toList();
     if (_keys.where((element) => element == "allSongs").isNotEmpty) {
@@ -42,8 +44,8 @@ class _ScreenSongsState extends State<ScreenSongs> {
     if (_keys.where((element) => element == "fav").isNotEmpty) {
       favorites.value = box.get("fav");
     }
-    if (_keys.where((element) => element == "recent").isNotEmpty) {
-      recent.value = box.get("recent");   
+    if (_keys.where((element) => element == "recent").isNotEmpty) {  
+      recent.value = box.get("recent");
     }
 
     return Scaffold(
@@ -56,7 +58,6 @@ class _ScreenSongsState extends State<ScreenSongs> {
                   return ListView.separated(
                       physics: BouncingScrollPhysics(),
                       itemBuilder: (context, index) {
-                        
                         return listtile(
                             context, _allSongsController.hiveList, index);
                       },
@@ -76,17 +77,16 @@ class _ScreenSongsState extends State<ScreenSongs> {
       tileColor: Color.fromARGB(80, 245, 246, 247),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       leading: Hero(
-        
         tag: index,
         child: ClipRRect(
-           
-          child: Container( 
-            width: 50,height: 50, 
-            child: QueryArtworkWidget( 
-              id: newList[index].id, 
+          child: Container(
+            width: 50,
+            height: 50,
+            child: QueryArtworkWidget(
+              id: newList[index].id,
               type: ArtworkType.AUDIO,
               nullArtworkWidget: Image(
-                image: AssetImage("assets/music.png" ),
+                image: AssetImage("assets/music.png"),
                 fit: BoxFit.fill,
               ),
             ),
@@ -96,10 +96,15 @@ class _ScreenSongsState extends State<ScreenSongs> {
       title: Text(
         newList[index].title,
         maxLines: 1,
-        style: TextStyle(fontSize: 20 ,fontWeight: FontWeight.normal  ),
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal),
       ),
-      subtitle: Text(newList[index].artist.toString(),
-          style: TextStyle(fontSize: 15,),maxLines: 1, ),
+      subtitle: Text(
+        newList[index].artist.toString(),
+        style: TextStyle(
+          fontSize: 15,
+        ),
+        maxLines: 1,
+      ),
       onTap: () async {
         //  go to now playing
         try {
@@ -111,7 +116,7 @@ class _ScreenSongsState extends State<ScreenSongs> {
         } catch (err) {
           await Get.defaultDialog(
               titleStyle: TextStyle(color: Colors.black),
-              backgroundColor: Color.fromARGB(255, 174, 169, 254), 
+              backgroundColor: Color.fromARGB(255, 174, 169, 254),
               content: Container(
                 child: Text(
                   'Songs not found',
@@ -125,16 +130,15 @@ class _ScreenSongsState extends State<ScreenSongs> {
                   child: Text('OK', style: TextStyle(color: Colors.black))));
         }
 
-         recent.value.add(newList[index]);
-         await box.put("recent", recent.value);
-
-
-
-
-
-
+        List onePlaylist = box.get("recent"); 
         
-                     
+        if (onePlaylist
+            .where((element) => 
+                element.id.toString() == newList[index].id.toString())
+            .isEmpty) {   
+          recent.value.add(newList[index]);
+          await box.put("recent", recent.value);  
+        }  
       },
       onLongPress: () {
         bottomSheet(index, newList);
@@ -149,15 +153,16 @@ class _ScreenSongsState extends State<ScreenSongs> {
         builder: (BuildContext context) {
           return Container(
               decoration: BoxDecoration(
-                  color: Theme.of(context).brightness == Brightness.light? 
-             Color.fromARGB(255  , 174, 169, 254) :Color.fromARGB(255, 74, 72, 110), 
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Color.fromARGB(255, 174, 169, 254)
+                      : Color.fromARGB(255, 74, 72, 110),
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(15),
                       topRight: Radius.circular(15))),
-              height: 80 ,
+              height: 80,
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center ,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ValueListenableBuilder(
                         valueListenable: favorites,
@@ -166,74 +171,100 @@ class _ScreenSongsState extends State<ScreenSongs> {
                                   .where((element) =>
                                       element.id.toString() ==
                                       newList[index].id.toString())
-                                  .isEmpty?
-                               Column(
+                                  .isEmpty
+                              ? Column(
                                   children: [
-                                   SizedBox(height: 15 ,), 
-                                     ClipRRect(
-                                      borderRadius: BorderRadius.circular(20), 
-                                       child: Container( 
-                                        width: 40,height: 40,
-                                        color: Theme.of(context).brightness == Brightness.light? 
-             Color.fromARGB(255, 252, 252, 252) :Color.fromARGB(255, 111, 109, 149), 
-                                         child: Center(
-                                           child: IconButton(
-                                            icon:
-                                                Icon(Icons.favorite_border_outlined),
-                                            onPressed: () async {
-                                              favorites.value.add(newList[index]);
-                                              await box.put("fav", favorites.value);
-                                              favorites.notifyListeners();
-                                              Navigator.of(context).pop(); 
-                                              
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const  SnackBar(
-                                      content:Text(' Added to favorites',textAlign: TextAlign.center ,)  ,
-                                      duration: Duration(seconds: 2),
-                                      behavior:SnackBarBehavior.floating,
-                                      width: 120       ,
-                                      padding: EdgeInsets.all(10 ),
+                                    SizedBox(
+                                      height: 15,
                                     ),
-                                  );
-                                              
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(20),
+                                      child: Container(
+                                        width: 40,
+                                        height: 40,
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Color.fromARGB(255, 252, 252, 252)
+                                            : Color.fromARGB(
+                                                255, 111, 109, 149),
+                                        child: Center(
+                                          child: IconButton(
+                                            icon: Icon(
+                                                Icons.favorite_border_outlined),
+                                            onPressed: () async {
+                                              favorites.value
+                                                  .add(newList[index]);
+                                              await box.put(
+                                                  "fav", favorites.value);
+                                              favorites.notifyListeners();
+                                              Navigator.of(context).pop();
+
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                    ' Added to favorites',
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  duration:
+                                                      Duration(seconds: 2),
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
+                                                  width: 120,
+                                                  padding: EdgeInsets.all(10),
+                                                ),
+                                              );
                                             },
-                                                                           ),
-                                         ),
-                                       ),
-                                     ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     Text('Add to favorites')
                                   ],
                                 )
                               : Column(
                                   children: [
-                                    SizedBox(height: 15,), 
+                                    SizedBox(
+                                      height: 15,
+                                    ),
                                     ClipRRect(
-                                      borderRadius: BorderRadius.circular(20) ,
+                                      borderRadius: BorderRadius.circular(20),
                                       child: Container(
-                                        color: Theme.of(context).brightness == Brightness.light? 
-             Color.fromARGB(255, 252, 252, 252) :Color.fromARGB(255, 111, 109, 149)   ,
-                                        width: 40,height: 40,
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.light
+                                            ? Color.fromARGB(255, 252, 252, 252)
+                                            : Color.fromARGB(
+                                                255, 111, 109, 149),
+                                        width: 40,
+                                        height: 40,
                                         child: Center(
                                           child: IconButton(
                                             onPressed: () async {
-                                              favorites.value.removeWhere((element) =>
-                                                  element.id.toString() ==
-                                                  newList[index].id.toString());
-                                              await box.put("fav", favorites.value);
+                                              favorites.value.removeWhere(
+                                                  (element) =>
+                                                      element.id.toString() ==
+                                                      newList[index]
+                                                          .id
+                                                          .toString());
+                                              await box.put(
+                                                  "fav", favorites.value);
                                               favorites.notifyListeners();
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const  SnackBar(
-                                      content:Text('Removed from favorites', textAlign: TextAlign.center,)  ,
-                                      
-                                      duration: Duration(seconds: 2 ),
-                                      behavior:SnackBarBehavior.floating,
-                                      width: 150      ,
-                                      padding: EdgeInsets.all(10 ),
-                                    ),
-                                  );
-                                  Navigator.of(context).pop(); 
-                                    
-                                             
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                  content: Text(
+                                                    'Removed from favorites',
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  duration:
+                                                      Duration(seconds: 2),
+                                                  behavior:
+                                                      SnackBarBehavior.floating,
+                                                  width: 150,
+                                                  padding: EdgeInsets.all(10),
+                                                ),
+                                              );
+                                              Navigator.of(context).pop();
                                             },
                                             icon: Icon(Icons.favorite,
                                                 color: Colors.red),
@@ -250,13 +281,18 @@ class _ScreenSongsState extends State<ScreenSongs> {
                     ),
                     Column(
                       children: [
-                        SizedBox(height: 15 ,), 
+                        SizedBox(
+                          height: 15,
+                        ),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: Container(
-                            color: Theme.of(context).brightness == Brightness.light? 
-             Color.fromARGB(255, 252, 252, 252) :Color.fromARGB(255, 111, 109, 149),  
-                            width:  40,height: 40,
+                            color:
+                                Theme.of(context).brightness == Brightness.light
+                                    ? Color.fromARGB(255, 252, 252, 252)
+                                    : Color.fromARGB(255, 111, 109, 149),
+                            width: 40,
+                            height: 40,
                             child: Center(
                               child: IconButton(
                                 onPressed: () {
@@ -274,11 +310,6 @@ class _ScreenSongsState extends State<ScreenSongs> {
                   ]));
         });
   }
-
-
- 
-  
- 
 }
                
                  
